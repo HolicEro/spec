@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>spec</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div ng-app='spec' ng-controller='specCtrl' class="container-fluid">
+            <style type="text/css">
+            li:nth-child( {{min+1}}
+            
+            ) .innerBlock,
+            li:nth-child({{pointer+1}}) .innerBlock {
+                background-color: #c02414;
+            }
+            
+            li:nth-child({{sorted}}) .innerBlock {
+                background-color: #3daaff;
+            }
+            </style>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="page-header">
+                        <h1>
+                    排序算法演示 <small>毫无意义的副标题</small>
+                </h1>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-md-12" id="playground">
+                            <ul>
+                                <li ng-repeat="data in dataSet track by $index" class="data-holder-{{resDataSize}}">
+                                    <div class="innerBlock" style="height: {{data/resDataSize*150}}px;"></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <legend>统计</legend>
+                        <p>Method: {{sortMethod}}, comparation: {{comparation}}, data access: {{dataAccess}}</p>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-md-8">
+                            <form>
+                                <fieldset>
+                                    <legend>测试数据</legend>
+                                    <textarea ng-model='dataSet' class="form-control" rows="4"></textarea>
+                                    <div class="btn-group" role="group" aria-label="...">
+                                        <button ng-click="dataSize=20" type="button" class="btn btn-default">20</button>
+                                        <button ng-click="dataSize=50" type="button" class="btn btn-default">50</button>
+                                        <button ng-click="dataSize=100" type="button" class="btn btn-default">100</button>
+                                        <button ng-click="dataSize=200" type="button" class="btn btn-default">200</button>
+                                        <button ng-click="dataSize=800" type="button" class="btn btn-default">800</button>
+                                    </div>
+                                    <button ng-click=getData(dataSize) type="submit" class="btn btn-default">点我获取{{ dataSize }}个随机数据</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <legend>排序算法</legend>
+                            <div class="btn-group">
+                                <button ng-click="sortMethod='selection sort'" class="btn btn-default" type="button">选择排序</button>
+                                <button ng-click="sortMethod='insertion sort'" class="btn btn-default" type="button">插入排序</button>
+                                <button ng-click="sortMethod='shell sort'" class="btn btn-default" type="button">希尔排序</button>
+                            </div>
+                            <div class="btn-group">
+                                <button ng-click="sortMethod='merge sort'" class="btn btn-default" type="button">归并排序</button>
+                                <button ng-click="sortMethod='quick sort'" class="btn btn-default" type="button">快速排序</button>
+                                <button ng-click="sortMethod='heap sort'" class="btn btn-default" type="button">堆排序</button>
+                            </div>
+                            <button ng-click=testsort(sortMethod) type="submit" class="btn btn-success">弹射起步GO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src='/static/angular.min.js'></script>
+    <script type="text/javascript" src='/static/script.js'></script>
+</body>
+
+</html>
