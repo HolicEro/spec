@@ -8,7 +8,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
             params: {
                 "dataSize": dataSize
             },
-            url: "http://localhost:3000/api"
+            url: "http://120.24.88.103:3000/api"
         }).success(function(res) {
             $scope.dataSet = res.data;
             // console.log(res.data);

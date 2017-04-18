@@ -13,7 +13,7 @@ const spec = express();
 spec.use('/static', express.static(path.join(__dirname, 'public')));
 
 spec.get('/', function(req, res) {
-    res.sendfile('index.html');
+    res.sendFile('index.html');
 
 
     console.log('request in');
