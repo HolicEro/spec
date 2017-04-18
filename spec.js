@@ -4,6 +4,7 @@ const
     http = require('http'),
     express = require('express'),
     util = require('util'),
+    hostname = 120.24.88.103,
     path = require('path');
 
 const spec = express();
@@ -32,7 +33,7 @@ spec.get('/api', function(req, res) {
 });
 
 
-spec.listen(3000, () => {
+spec.listen(3000, hostname, () => {
     console.log('server online, listening on port 3000');
 });
 
