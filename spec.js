@@ -4,7 +4,7 @@ const
     http = require('http'),
     express = require('express'),
     util = require('util'),
-    hostname = 120.24.88.103,
+    hostname = '120.24.88.103',
     path = require('path');
 
 const spec = express();
