@@ -36,7 +36,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
         }
 
         //make a copy of $scope.dataSet to a local list
-        const list = [];
+        var list = [];
 
         $scope.dataSet.forEach(function(e) {
             list.push(e)
@@ -63,7 +63,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
                 quicksort(list, steps);
                 break;
             case 'heap sort':
-                heapsort(list, steps);
+                heapsort_alt(list, steps);
                 break;
             default:
                 console.error('sort method error');
@@ -72,6 +72,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
         $scope.dataAccess = 0;
         $scope.comparation = 0;
 
+        console.log(list);
         console.log(steps);
         var timer = $interval(function() {
             readStep(steps);
@@ -110,7 +111,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
 
             for (var j = i + 1; j < len; j++) {
                 steps.push({
-                    pointer: j
+                    'pointer': j
                 })
                 if (list[j] < list[min]) {
                     min = j;
@@ -242,9 +243,174 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
 
     const quicksort = function(list, steps) {
 
+        const len = list.length;
+
+        const sort = function(list, lo, hi) {
+            if (hi <= lo) return;
+            const j = partition(list, lo, hi);
+            sort(list, lo, j - 1);
+            sort(list, j + 1, hi);
+
+        }
+
+        const partition = function(list, lo, hi) {
+            var i = lo,
+                j = hi + 1;
+            const v = list[lo];
+            while (true) {
+                while (list[++i] < v) {
+                    steps.push({
+                        'sorted': i
+                    });
+                    if (i === hi) break;
+                }
+
+                while (v < list[--j]) {
+                    steps.push({
+                        'sorted': j
+                    });
+                    if (j === lo) break;
+                }
+
+                if (i >= j) break;
+                var temp = list[i];
+                list[i] = list[j];
+                list[j] = temp;
+
+                steps.push({
+                    'swap': [i, j]
+                });
+            }
+            var temp = list[lo];
+            list[lo] = list[j];
+            list[j] = temp;
+
+            steps.push({
+                'swap': [lo, j]
+            });
+            return j;
+        }
+
+        sort(list, 0, len - 1);
     }
 
     const heapsort = function(list, steps) {
+
+
+
+        const swim = function(list, k) {
+            while (k > 1 && list[Math.floor(k / 2)] < list[k]) {
+                var temp = list[Math.floor(k / 2)];
+                list[Math.floor(k / 2)] = list[k];
+                list[k] = temp;
+                k = Math.floor(k / 2);
+            }
+        }
+
+        const sink = function(list, k, len) {
+            list[0] = list[k];
+            for (var i = 2 * k; i <= len; i *= 2) {
+                if (i < len && list[i] < list[i + 1]) {
+                    i++;
+                }
+                if (list[0] >= list[i]) {
+                    break;
+                } else {
+                    list[k] = list[i];
+                    k = i;
+                }
+            }
+            list[k] = list[0];
+        }
+
+        const BuildMaxHeap = function(list, len) {
+            for (var i = Math.floor(len / 2); i > 0; i--) {
+                sink(list, i, len);
+            }
+        }
+
+        const sort = function(list, len) {
+            BuildMaxHeap(list, len);
+            for (var i = len; i > 1; i--) {
+                var temp = list[i];
+                list[i] = list[1];
+                list[1] = temp;
+                sink(list, 1, i - 1);
+            }
+        }
+        sort(list, list.length);
+
+    }
+    const heapsort_alt = function(list, steps) {
+        function headAdjust(elements, pos, len) {
+            //将当前节点值进行保存
+            var swap = elements[pos];
+
+            //定位到当前节点的左边的子节点
+            var child = pos * 2 + 1;
+
+            //递归，直至没有子节点为止
+            while (child < len) {
+                //如果当前节点有右边的子节点，并且右子节点较大的场合，采用右子节点
+                //和当前节点进行比较
+                if (child + 1 < len && elements[child] < elements[child + 1]) {
+                    child += 1;
+                }
+
+                //比较当前节点和最大的子节点，小于则进行值交换，交换后将当前节点定位
+                //于子节点上
+                if (elements[pos] < elements[child]) {
+                    elements[pos] = elements[child];
+                    steps.push({
+                        'is': [pos, elements[child]]
+                    })
+                    pos = child;
+                    child = pos * 2 + 1;
+                } else {
+                    break;
+                }
+
+                elements[pos] = swap;
+                steps.push({
+                    'is': [pos, swap]
+                })
+            }
+        }
+
+        //构建堆
+        function buildHeap(elements) {
+            //从最后一个拥有子节点的节点开始，将该节点连同其子节点进行比较，
+            //将最大的数交换与该节点,交换后，再依次向前节点进行相同交换处理，
+            //直至构建出大顶堆（升序为大顶，降序为小顶）
+            for (var i = elements.length / 2; i >= 0; i--) {
+                headAdjust(elements, i, elements.length);
+            }
+        }
+
+        function sort(elements) {
+            //构建堆
+            buildHeap(elements);
+
+            //从数列的尾部开始进行调整
+            for (var i = elements.length - 1; i > 0; i--) {
+                //堆顶永远是最大元素，故，将堆顶和尾部元素交换，将
+                //最大元素保存于尾部，并且不参与后面的调整
+                var swap = elements[i];
+                elements[i] = elements[0];
+                elements[0] = swap;
+                steps.push({
+                    'swap': [i, 0]
+                })
+
+                //进行调整，将最大）元素调整至堆顶
+                headAdjust(elements, 0, i);
+            }
+        }
+
+
+        console.log('before: ' + list);
+        sort(list);
+        console.log(' after: ' + list);
 
     }
 
@@ -286,7 +452,7 @@ spec.controller('specCtrl', function($scope, $http, $interval) {
     const steps = [];
 
     $scope.min = 'null';
-    $scope.sortMethod = 'selection sort';
+    $scope.sortMethod = 'quick sort';
     $scope.comparation = 0;
     $scope.dataAccess = 0;
     $scope.dataSize = 50;
